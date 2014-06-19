@@ -1,7 +1,7 @@
 {
   "name": "editor-redux",
   "main": "./lib/editor-redux",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "An Atom package that provides support for overriding editor settings based on grammar scopes.",
   "repository": "https://github.com/thomasjo/atom-editor-redux",
   "license": "MIT",
