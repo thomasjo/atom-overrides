@@ -31,7 +31,7 @@ Support for more overrides will be added as soon as possible.
 ## TODO
 Current wish list, in a semi-prioritized order;
 
-- [ ] Add tests.
+- [x] Add tests.
 - [ ] Menu item (or similar) for opening the configuration file.
 - [ ] Support cascading overrides based on incremental scope matching.
 - [ ] Implement support for more editor related settings.
