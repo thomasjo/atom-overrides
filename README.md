@@ -7,9 +7,10 @@ Use the Atom package manager and search for e.g. "editor redux", or run
 `apm install editor-redux` from the command line.
 
 ## Usage
-For the time being you need to manually create and edit the settings file,
-which is currently hardcoded to `<atom-config-dir>/redux.cson`;
-in OS X resolves to `~/.atom/redux.cson`.
+The quickest way to tweak your overrides is to the menu item
+`Packages->Editor Redux->Open Your Overrides`.  
+For the time being, the path to the overrides file
+is currently hardcoded to `<atom-config-dir>/overrides.cson`.
 
 Until the scope cascade feature has been implemented, the scope name of the
 grammar you wish to override editor settings for needs to be an exact match.
@@ -32,7 +33,7 @@ Support for more overrides will be added as soon as possible.
 Current wish list, in a semi-prioritized order;
 
 - [x] Add tests.
-- [ ] Menu item (or similar) for opening the configuration file.
+- [x] Menu item (or similar) for opening the configuration file.
 - [ ] Support cascading overrides based on incremental scope matching.
 - [ ] Implement support for more editor related settings.
   - [ ] Find a more flexible system than the current `switch` nonsense...
