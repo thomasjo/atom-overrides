@@ -40,20 +40,23 @@ module.exports =
 
   getScopeOverrides: (scopeName) ->
     # TODO: Implement support for cascading scopes.
-    @allOverrides?[scopeName]
+    @allOverrides?[scopeName] || null
 
   loadOverrides: (path) ->
-    if fs.existsSync(path)
-      @allOverrides = CSON.readFileSync(path)
+    return null unless fs.existsSync(path)
+    @allOverrides = CSON.readFileSync(path)
 
   watchOverridesFile: (path) ->
     # TODO: Handle file not existing by watching config dir?
-    return unless fs.existsSync(path)
+    return false unless fs.existsSync(path)
 
     fs.watch path, (event) =>
-      @loadOverrides(path) if event == "change"
+      return unless event == "change"
+      @loadOverrides(path)
       for editor in atom.workspace.getEditors()
         @applyOverrides(editor)
+
+    return true
 
   getOverridesFilePath: ->
     # TODO: Make this configurable?
