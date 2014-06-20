@@ -21,7 +21,7 @@ describe "EditorRedux", ->
 
   describe "getScopeOverrides", ->
     beforeEach ->
-      filePath = getConfigFilePath("redux.cson")
+      filePath = getConfigFilePath("overrides.cson")
       EditorRedux.loadOverrides(filePath)
 
     it "returns nothing when given a scope with no overrides", ->
@@ -42,7 +42,7 @@ describe "EditorRedux", ->
       expect(overrides).toBeNull()
 
     it "loads and returns the expected overrides", ->
-      filePath = getConfigFilePath("redux.cson")
+      filePath = getConfigFilePath("overrides.cson")
       overrides = EditorRedux.loadOverrides(filePath)
       expect(overrides["source.python"]).toBeDefined()
 
@@ -59,6 +59,6 @@ describe "EditorRedux", ->
 
   describe "getOverridesFilePath", ->
     it "returns the expected file path", ->
-      expectedFilePath = getConfigFilePath("redux.cson")
+      expectedFilePath = getConfigFilePath("overrides.cson")
       filePath = EditorRedux.getOverridesFilePath()
       expect(filePath).toEqual(expectedFilePath)
