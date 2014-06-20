@@ -47,7 +47,13 @@ module.exports =
 
   loadOverrides: (path) ->
     return null unless fs.existsSync(path)
-    @allOverrides = CSON.readFileSync(path)
+
+    try
+      @allOverrides = CSON.readFileSync(path)
+    catch
+      console.error "An error occured while parsing overrides.cson"
+    finally
+      return @allOverrides
 
   watchOverridesFile: (path) ->
     # TODO: Handle file not existing by watching config dir?
