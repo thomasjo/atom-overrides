@@ -66,7 +66,7 @@ module.exports =
 
   getOverridesFilePath: ->
     # TODO: Make this configurable?
-    path.join(atom.getConfigDirPath(), "redux.cson")
+    path.join(atom.getConfigDirPath(), "overrides.cson")
 
   deactivate: ->
     @subscriber?.unsubscribe()
