@@ -16,6 +16,9 @@ module.exports =
       @applyOverrides(editor)
       @handleEvents(editor)
 
+    atom.workspaceView.command "editor-redux:open-user-overrides", =>
+      @openOverridesFile(overridesFilePath)
+
   handleEvents: (editor) ->
     @subscriber.subscribe editor, "grammar-changed", =>
       @applyOverrides(editor)
@@ -57,6 +60,9 @@ module.exports =
         @applyOverrides(editor)
 
     return true
+
+  openOverridesFile: (path) ->
+    atom.workspace.open(path)
 
   getOverridesFilePath: ->
     # TODO: Make this configurable?

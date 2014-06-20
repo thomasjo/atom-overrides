@@ -1,0 +1,14 @@
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'Editor Redux'
+      'submenu': [
+        {
+          'label': 'Open Your Overrides'
+          'command': 'editor-redux:open-user-overrides'
+        }
+      ]
+    ]
+  }
+]
