@@ -7,15 +7,16 @@ Use the Atom package manager and search for e.g. "editor redux", or run
 `apm install editor-redux` from the command line.
 
 ## Usage
-The quickest way to tweak your overrides is to the menu item
-`Packages->Editor Redux->Open Your Overrides`.  
-For the time being, the path to the overrides file
-is currently hardcoded to `<atom-config-dir>/overrides.cson`.
+The quickest way to tweak your overrides is via the menu item _Open Your
+Overrides_, which opens the overrides file. For the time being, the path to the
+overrides file is hardcoded to `<atom-config-dir>/overrides.cson`.
 
 Until the scope cascade feature has been implemented, the scope name of the
 grammar you wish to override editor settings for needs to be an exact match.
+In other words, if you wish to override indentation settings for Python code,
+you need to add an entry for `source.python` to your overrides file.
 
-### Example configuration file
+### Example overrides file
 ```coffeescript
 'source.python':
   'tabLength': 4
