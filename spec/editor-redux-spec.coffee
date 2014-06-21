@@ -28,11 +28,18 @@ describe "EditorRedux", ->
       overrides = EditorRedux.getScopeOverrides("foo")
       expect(overrides).toBeNull()
 
-    it "returns the expected overrides for the given scope", ->
+    it "returns the expected overrides for the given non-cascading scope", ->
       overrides = EditorRedux.getScopeOverrides("source.python")
       expect(overrides).toEqual {
         'tabLength': 4
         'softTabs': true
+      }
+
+    it "returns the cascaded overrides for the given scope", ->
+      overrides = EditorRedux.getScopeOverrides("text.foo.bar")
+      expect(overrides).toEqual {
+        'tabLength': 16
+        'softTabs': false
       }
 
   describe "loadOverrides", ->
