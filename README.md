@@ -16,9 +16,9 @@ Overrides are applied in a cascading manner, based on incremental scope matches.
 For instance, given the example file below, will override the tab length and
 soft tabs settings to `4` and `true`, respectively, for a Python editor. Whereas
 for e.g. a CoffeeScript editor (meaning a scope equal to `source.coffee`) only
-the tab length will overridden, and it'll be set to `2`. In other words, ff we
-remove the explicit override listed under `source.python`, we will inherit the
-override from `source`.
+the tab length setting will be overridden, and it'll be set to `2`.
+In other words, if we were to remove the override for tab length listed under
+`source.python`, we would inherit that setting override from `source`.
 
 ### Example overrides file
 ```coffeescript
