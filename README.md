@@ -11,16 +11,23 @@ The quickest way to tweak your overrides is via the menu item _Open Your
 Overrides_, which opens the overrides file. For the time being, the path to the
 overrides file is hardcoded to `<atom-config-dir>/overrides.cson`.
 
-Until the scope cascade feature has been implemented, the scope name of the
-grammar you wish to override editor settings for needs to be an exact match.
-In other words, if you wish to override indentation settings for Python code,
-you need to add an entry for `source.python` to your overrides file.
+### Cascading overrides
+Overrides are applied in a cascading manner, based on incremental scope matches.
+For instance, given the example file below, will override the tab length and
+soft tabs settings to `4` and `true`, respectively, for a Python editor. Whereas
+for e.g. a CoffeeScript editor (meaning a scope equal to `source.coffee`) only
+the tab length will overridden, and it'll be set to `2`. In other words, ff we
+remove the explicit override listed under `source.python`, we will inherit the
+override from `source`.
 
 ### Example overrides file
 ```coffeescript
 'source.python':
   'tabLength': 4
   'softTabs': true
+
+`source`:
+  `tabLength`: 2
 ```
 
 The configuration file is monitored for changes, so there's no need to reload
