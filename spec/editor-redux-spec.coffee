@@ -26,7 +26,7 @@ describe "EditorRedux", ->
 
     it "returns nothing when given a scope with no overrides", ->
       overrides = EditorRedux.getScopeOverrides("foo")
-      expect(overrides).toBeNull()
+      expect(overrides).toEqual {}
 
     it "returns the expected overrides for the given non-cascading scope", ->
       overrides = EditorRedux.getScopeOverrides("source.python")

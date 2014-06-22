@@ -31,7 +31,6 @@ module.exports =
     grammar = editor.getGrammar()
     scopeName = grammar.scopeName
     overrides = @getScopeOverrides(scopeName)
-    return unless overrides
 
     # TODO: Change the current implementation to something more flexible.
     for key in Object.getOwnPropertyNames(overrides)
@@ -43,8 +42,14 @@ module.exports =
           editor.setSoftTabs(value)
 
   getScopeOverrides: (scopeName) ->
-    # TODO: Implement support for cascading scopes.
-    @allOverrides?[scopeName] || null
+    overrides = {}
+    scopeName?.split(".").reduce (previousScope, segment) =>
+      scope = if previousScope then "#{previousScope}.#{segment}" else segment
+      overrides = _.extend(overrides, @allOverrides?[scope])
+      scope
+    , null # Ugh...
+
+    overrides
 
   loadOverrides: (path) ->
     return null unless fs.existsSync(path)
