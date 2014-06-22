@@ -1,3 +1,14 @@
 'source.python':
   'tabLength': 4
   'softTabs': true
+
+'text':
+  'tabLength': 2
+  'softTabs': true
+
+'text.foo.bar':
+  'tabLength': 16
+
+'text.foo':
+  'softTabs': false
+  'tabLength': 8

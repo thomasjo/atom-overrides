@@ -35,7 +35,7 @@ Current wish list, in a semi-prioritized order;
 
 - [x] Add tests.
 - [x] Menu item (or similar) for opening the configuration file.
-- [ ] Support cascading overrides based on incremental scope matching.
+- [x] Support cascading overrides based on incremental scope matching.
 - [ ] Implement support for more editor related settings.
   - [ ] Find a more flexible system than the current `switch` nonsense...
   - [ ] Support for package specific settings for packages such as
