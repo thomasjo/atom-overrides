@@ -1,3 +1,6 @@
+## 0.3.0
+* Added first implementation of cascading overrides based on incremental scopes.
+
 ## 0.2.0
 * Introduced a menu item for opening your overrides file.
 * Renamed redux.cson -> overrides.cson.
