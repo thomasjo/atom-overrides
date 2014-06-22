@@ -55,6 +55,7 @@ module.exports =
     return null unless fs.existsSync(path)
 
     try
+      # TODO: Drop the instance variable and only return the object?
       @allOverrides = CSON.readFileSync(path)
     catch
       console.error "An error occured while parsing overrides.cson"
