@@ -37,8 +37,8 @@ The configuration file is monitored for changes, so there's no need to reload
 Atom. Simply edit and save, and your changes will applied immediately.
 
 ## Status
-Right now, the only supported editor settings are `tabLength` and `softTabs`.
-Support for more overrides will be added as soon as possible.
+Right now, the only supported editor settings are `tabLength`, `softTabs` and
+`softWrap`. Support for more overrides will be added as soon as possible.
 
 ## TODO
 Current wish list, in a semi-prioritized order;
