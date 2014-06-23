@@ -26,11 +26,11 @@ In other words, if we were to remove the override for tab length listed under
   'tabLength': 4
   'softTabs': true
 
-`source`:
-  `tabLength`: 2
+'source':
+  'tabLength': 2
 
-`text`:
-  `softWrap`: true
+'text':
+  'softWrap': true
 ```
 
 The configuration file is monitored for changes, so there's no need to reload
