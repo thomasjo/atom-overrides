@@ -1,3 +1,6 @@
+## 0.4.0
+* Added support for overriding soft wrap setting.
+
 ## 0.3.0
 * Added first implementation of cascading overrides based on incremental scopes.
 
