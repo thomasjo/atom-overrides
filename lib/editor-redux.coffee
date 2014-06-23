@@ -40,6 +40,8 @@ module.exports =
           editor.setTabLength(value)
         when "softTabs"
           editor.setSoftTabs(value)
+        when "softWrap"
+          editor.setSoftWrap(value)
 
   getScopeOverrides: (scopeName) ->
     overrides = {}
