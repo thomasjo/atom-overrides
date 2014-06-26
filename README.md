@@ -3,8 +3,8 @@ An Atom package that provides support for overriding editor settings based on
 grammar scopes.
 
 ## Installing
-Use the Atom package manager and search for e.g. "editor redux", or run
-`apm install editor-redux` from the command line.
+Use the Atom package manager and search for e.g. "overrides", or run
+`apm install overrides` from the command line.
 
 ## Usage
 The quickest way to tweak your overrides is via the menu item _Open Your
