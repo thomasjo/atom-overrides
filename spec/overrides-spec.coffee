@@ -1,8 +1,3 @@
-fs = require "fs-plus"
-path = require "path"
-temp = require "temp"
-wrench = require "wrench"
-
 Overrides = require "../lib/overrides"
 
 describe "Overrides", ->
