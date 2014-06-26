@@ -40,17 +40,22 @@ module.exports =
 
   getOverridesForScope: (scopeName) ->
     overrides = {}
+    allOverrides = @getOverrides()
+    return overrides unless allOverrides?
+
     scopeName?.split(".").reduce (previousScope, segment) =>
       scope = if previousScope then "#{previousScope}.#{segment}" else segment
-      overrides = _.extend(overrides, @allOverrides?[scope])
+      overrides = _.extend(overrides, allOverrides?[scope])
       scope
     , null # Ugh...
 
     overrides
 
+  getOverrides: ->
+    atom.config.get("overrides.scopes")
+
   watchScopeConfig: ->
-    @subscriber.subscribe atom.config.observe "overrides.scopes", (scopes) =>
-      @allOverrides = scopes
+    @subscriber.subscribe atom.config.observe "overrides.scopes", =>
       for editor in atom.workspace.getEditors()
         @applyOverrides(editor)
 
