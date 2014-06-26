@@ -25,7 +25,7 @@ module.exports =
   applyOverrides: (editor) ->
     grammar = editor.getGrammar()
     scopeName = grammar.scopeName
-    overrides = @getScopeOverrides(scopeName)
+    overrides = @getOverridesForScope(scopeName)
 
     # TODO: Change the current implementation to something more flexible.
     for key in Object.getOwnPropertyNames(overrides)
@@ -38,7 +38,7 @@ module.exports =
         when "softWrap"
           editor.setSoftWrap(value)
 
-  getScopeOverrides: (scopeName) ->
+  getOverridesForScope: (scopeName) ->
     overrides = {}
     scopeName?.split(".").reduce (previousScope, segment) =>
       scope = if previousScope then "#{previousScope}.#{segment}" else segment
