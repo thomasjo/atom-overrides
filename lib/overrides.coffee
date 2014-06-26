@@ -49,7 +49,7 @@ module.exports =
     overrides
 
   watchScopeConfig: ->
-    atom.config.observe "overrides.scopes", (scopes) =>
+    @subscriber.subscribe atom.config.observe "overrides.scopes", (scopes) =>
       @allOverrides = scopes
       for editor in atom.workspace.getEditors()
         @applyOverrides(editor)
