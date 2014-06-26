@@ -1,4 +1,5 @@
 _ = require "underscore-plus"
+clipboard = require "clipboard"
 
 {Subscriber} = require "emissary"
 
@@ -14,6 +15,9 @@ module.exports =
     @subscriber.subscribe atom.workspace.eachEditor (editor) =>
       @applyOverrides(editor)
       @handleEvents(editor)
+
+    atom.workspaceView.command "overrides:copy-grammar-scope", =>
+      @copyCurrentGrammarScope()
 
   handleEvents: (editor) ->
     @subscriber.subscribe editor, "grammar-changed", =>
@@ -58,6 +62,12 @@ module.exports =
     @subscriber.subscribe atom.config.observe "overrides.scopes", =>
       for editor in atom.workspace.getEditors()
         @applyOverrides(editor)
+
+  copyCurrentGrammarScope: ->
+    editor = atom.workspace.getActiveEditor()
+    grammar = editor?.getGrammar()
+    scopeName = grammar?.scopeName
+    clipboard.writeText(scopeName)
 
   deactivate: ->
     @subscriber?.unsubscribe()
