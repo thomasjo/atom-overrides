@@ -1,25 +1,31 @@
 Overrides = require "../lib/overrides"
 
+allOverrides = {
+  'source.python':
+    'tabLength': 4
+    'softTabs': true
+
+  'text':
+    'tabLength': 2
+    'softTabs': true
+
+  'text.foo.bar':
+    'tabLength': 16
+
+  'text.foo':
+    'softTabs': false
+    'tabLength': 8
+}
+
 describe "Overrides", ->
   beforeEach ->
     Overrides.activate()  # TODO: Dirty hack. Fix ASAP!
-    atom.config.set "overrides", {
-      'scopes':
-        'source.python':
-          'tabLength': 4
-          'softTabs': true
+    atom.config.set("overrides.scopes", allOverrides)
 
-        'text':
-          'tabLength': 2
-          'softTabs': true
-
-        'text.foo.bar':
-          'tabLength': 16
-
-        'text.foo':
-          'softTabs': false
-          'tabLength': 8
-    }
+  describe "getOverrides", ->
+    it "returns all configured overrides", ->
+      overrides = Overrides.getOverrides()
+      expect(overrides).toEqual(allOverrides)
 
   describe "getOverridesForScope", ->
     it "returns nothing when given a scope with no overrides", ->
