@@ -1,3 +1,6 @@
+## 0.5.0
+* Renamed the package from _Editor Redux_ to _Overrides_.
+
 ## 0.4.0
 * Added support for overriding soft wrap setting.
 
