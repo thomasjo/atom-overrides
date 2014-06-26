@@ -1,4 +1,4 @@
-# Editor Redux
+# Overrides
 An Atom package that provides support for overriding editor settings based on
 grammar scopes.
 
