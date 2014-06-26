@@ -1,24 +1,23 @@
 _ = require "underscore-plus"
-fs = require "fs-plus"
-path = require "path"
-CSON = require "season"
+clipboard = require "clipboard"
 
 {Subscriber} = require "emissary"
 
 module.exports =
+  configDefaults:
+    scopes: null
+
   activate: ->
     @subscriber = new Subscriber()
 
-    overridesFilePath = @getOverridesFilePath()
-    @loadOverrides(overridesFilePath)
-    @watchOverridesFile(overridesFilePath)
+    @watchScopeConfig()
 
     @subscriber.subscribe atom.workspace.eachEditor (editor) =>
       @applyOverrides(editor)
       @handleEvents(editor)
 
-    atom.workspaceView.command "editor-redux:open-user-overrides", =>
-      @openOverridesFile(overridesFilePath)
+    atom.workspaceView.command "overrides:copy-grammar-scope", =>
+      @copyCurrentGrammarScope()
 
   handleEvents: (editor) ->
     @subscriber.subscribe editor, "grammar-changed", =>
@@ -30,7 +29,7 @@ module.exports =
   applyOverrides: (editor) ->
     grammar = editor.getGrammar()
     scopeName = grammar.scopeName
-    overrides = @getScopeOverrides(scopeName)
+    overrides = @getOverridesForScope(scopeName)
 
     # TODO: Change the current implementation to something more flexible.
     for key in Object.getOwnPropertyNames(overrides)
@@ -43,45 +42,32 @@ module.exports =
         when "softWrap"
           editor.setSoftWrap(value)
 
-  getScopeOverrides: (scopeName) ->
+  getOverridesForScope: (scopeName) ->
     overrides = {}
+    allOverrides = @getOverrides()
+    return overrides unless allOverrides?
+
     scopeName?.split(".").reduce (previousScope, segment) =>
       scope = if previousScope then "#{previousScope}.#{segment}" else segment
-      overrides = _.extend(overrides, @allOverrides?[scope])
+      overrides = _.extend(overrides, allOverrides?[scope])
       scope
     , null # Ugh...
 
     overrides
 
-  loadOverrides: (path) ->
-    return null unless fs.existsSync(path)
+  getOverrides: ->
+    atom.config.get("overrides.scopes")
 
-    try
-      # TODO: Drop the instance variable and only return the object?
-      @allOverrides = CSON.readFileSync(path)
-    catch
-      console.error "An error occured while parsing overrides.cson"
-    finally
-      return @allOverrides
-
-  watchOverridesFile: (path) ->
-    # TODO: Handle file not existing by watching config dir?
-    return false unless fs.existsSync(path)
-
-    fs.watch path, (event) =>
-      return unless event == "change"
-      @loadOverrides(path)
+  watchScopeConfig: ->
+    @subscriber.subscribe atom.config.observe "overrides.scopes", =>
       for editor in atom.workspace.getEditors()
         @applyOverrides(editor)
 
-    return true
-
-  openOverridesFile: (path) ->
-    atom.workspace.open(path)
-
-  getOverridesFilePath: ->
-    # TODO: Make this configurable?
-    path.join(atom.getConfigDirPath(), "overrides.cson")
+  copyCurrentGrammarScope: ->
+    editor = atom.workspace.getActiveEditor()
+    grammar = editor?.getGrammar()
+    scopeName = grammar?.scopeName
+    clipboard.writeText(scopeName)
 
   deactivate: ->
     @subscriber?.unsubscribe()

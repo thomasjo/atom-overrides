@@ -10,10 +10,6 @@
   },
   "dependencies": {
     "emissary": "1.x",
-    "fs-plus": "2.x",
-    "season": "2.x",
-    "temp": "~0.8",
-    "underscore-plus": "1.x",
-    "wrench": "~1.5"
+    "underscore-plus": "1.x"
   }
 }
