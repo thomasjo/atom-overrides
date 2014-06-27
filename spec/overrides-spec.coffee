@@ -28,6 +28,10 @@ describe "Overrides", ->
       overrides = Overrides.getScopeOverrides("foo")
       expect(overrides).toEqual {}
 
+    it "returns nothing when given a nested scope with no overrides at any level", ->
+      overrides = Overrides.getScopeOverrides("foo.bar")
+      expect(overrides).toEqual {}
+
     it "returns the expected overrides for the given non-cascading scope", ->
       overrides = Overrides.getScopeOverrides("source.python")
       expect(overrides).toEqual {
@@ -40,6 +44,13 @@ describe "Overrides", ->
       expect(overrides).toEqual {
         'tabLength': 16
         'softTabs': false
+      }
+
+    it "returns the overrides only to the depth that is requested", ->
+      overrides = Overrides.getScopeOverrides("text.foo")
+      expect(overrides).toEqual {
+        softTabs: false
+        tabLength: 8
       }
 
   describe "loadOverrides", ->

@@ -42,12 +42,14 @@ module.exports =
           editor.setSoftWrap(value)
 
   getScopeOverrides: (scopeName) ->
+    whitelist = ['softTabs', 'softWrap', 'tabLength']
+
     overrides = {}
     temp = @allOverrides
     _.each scopeName?.split("."), (name) ->
       if temp?[name]?
         overrides = _.defaults(temp[name], overrides)
-        delete overrides[name]
+        overrides = _.pick(overrides, whitelist)
         temp = temp[name]
 
     overrides
