@@ -45,9 +45,10 @@ module.exports =
     overrides = {}
     temp = @allOverrides
     _.each scopeName?.split("."), (name) ->
-      overrides = _.defaults(temp[name], overrides) if temp[name]?
-      delete overrides[name]
-      temp = temp[name]
+      if temp?[name]?
+        overrides = _.defaults(temp[name], overrides)
+        delete overrides[name]
+        temp = temp[name]
 
     overrides
 
