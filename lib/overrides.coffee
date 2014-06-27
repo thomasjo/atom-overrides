@@ -32,7 +32,7 @@ module.exports =
     scopeName = grammar.scopeName
     overrides = @getScopeOverrides(scopeName)
 
-    for key, value in overrides
+    for key, value of overrides
       switch key
         when "tabLength"
           editor.setTabLength(value)
