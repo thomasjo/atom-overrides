@@ -22,12 +22,11 @@ In other words, if we were to remove the override for tab length listed under
 
 ### Example overrides file
 ```coffeescript
-'source.python':
-  'tabLength': 4
-  'softTabs': true
-
 'source':
   'tabLength': 2
+  'python':
+    'tabLength': 4
+    'softTabs': true
 
 'text':
   'softWrap': true

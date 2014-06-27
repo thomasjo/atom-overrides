@@ -1,3 +1,6 @@
+## master
+* Change to use a nested configuration that makes the inheritance more obvious
+
 ## 0.5.0
 * Renamed the package from _Editor Redux_ to _Overrides_.
 

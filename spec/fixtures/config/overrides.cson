@@ -1,14 +1,16 @@
-'source.python':
-  'tabLength': 4
-  'softTabs': true
-
+'source':
+  'foo':
+    'softTabs': true
+  'bar':
+    'tabLength': 4
+  'python':
+    'tabLength': 4
+    'softTabs': true
 'text':
+  'foo':
+    'bar':
+      'tabLength': 16
+    'softTabs': false
+    'tabLength': 8
   'tabLength': 2
   'softTabs': true
-
-'text.foo.bar':
-  'tabLength': 16
-
-'text.foo':
-  'softTabs': false
-  'tabLength': 8
