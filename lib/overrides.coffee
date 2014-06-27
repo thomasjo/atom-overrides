@@ -32,9 +32,7 @@ module.exports =
     scopeName = grammar.scopeName
     overrides = @getScopeOverrides(scopeName)
 
-    # TODO: Change the current implementation to something more flexible.
-    for key in Object.getOwnPropertyNames(overrides)
-      value = overrides[key]
+    for key, value in overrides
       switch key
         when "tabLength"
           editor.setTabLength(value)
@@ -45,11 +43,11 @@ module.exports =
 
   getScopeOverrides: (scopeName) ->
     overrides = {}
-    scopeName?.split(".").reduce (previousScope, segment) =>
-      scope = if previousScope then "#{previousScope}.#{segment}" else segment
-      overrides = _.extend(overrides, @allOverrides?[scope])
-      scope
-    , null # Ugh...
+    temp = @allOverrides
+    _.each scopeName?.split("."), (name) ->
+      overrides = _.defaults(temp[name], overrides) if temp[name]?
+      delete overrides[name]
+      temp = temp[name]
 
     overrides
 

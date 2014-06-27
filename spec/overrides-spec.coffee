@@ -51,7 +51,7 @@ describe "Overrides", ->
     it "loads and returns the expected overrides", ->
       filePath = getConfigFilePath("overrides.cson")
       overrides = Overrides.loadOverrides(filePath)
-      expect(overrides["source.python"]).toBeDefined()
+      expect(overrides.source.python).toBeDefined()
 
   describe "watchOverridesFile", ->
     it "does nothing when the file does not exist", ->
