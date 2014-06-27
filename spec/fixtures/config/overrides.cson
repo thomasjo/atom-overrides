@@ -1,4 +1,8 @@
 'source':
+  'foo':
+    'softTabs': true
+  'bar':
+    'tabLength': 4
   'python':
     'tabLength': 4
     'softTabs': true
