@@ -8,6 +8,15 @@ CSON = require "season"
 class Overrides
   Subscriber.includeInto(this)
 
+  constructor: ->
+    @map =
+      softTabs: (editor, value) ->
+        editor.setSoftTabs(value)
+      softWrap: (editor, value) ->
+        editor.setSoftWrap(value)
+      tabLength: (editor, value) ->
+        editor.setTabLength(value)
+
   activate: ->
     overridesFilePath = @getOverridesFilePath()
     @watchOverridesFile(overridesFilePath)
@@ -31,14 +40,8 @@ class Overrides
     scopeName = grammar.scopeName
     overrides = @getScopeOverrides(scopeName)
 
-    for key, value of overrides
-      switch key
-        when "tabLength"
-          editor.setTabLength(value)
-        when "softTabs"
-          editor.setSoftTabs(value)
-        when "softWrap"
-          editor.setSoftWrap(value)
+    for func, value of overrides
+      @map[func](editor, value)
 
   getScopeOverrides: (scopeName) ->
     whitelist = ['softTabs', 'softWrap', 'tabLength']
