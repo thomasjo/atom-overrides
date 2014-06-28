@@ -10,7 +10,6 @@ class Overrides
 
   activate: ->
     overridesFilePath = @getOverridesFilePath()
-    @loadOverrides(overridesFilePath)
     @watchOverridesFile(overridesFilePath)
 
     atom.workspace.eachEditor (editor) =>
@@ -45,7 +44,7 @@ class Overrides
     whitelist = ['softTabs', 'softWrap', 'tabLength']
 
     overrides = {}
-    temp = @allOverrides
+    temp = @loadOverrides(@getOverridesFilePath())
     _.each scopeName?.split("."), (name) ->
       if temp?[name]?
         overrides = _.defaults(temp[name], overrides)
@@ -56,29 +55,15 @@ class Overrides
 
   loadOverrides: (path) ->
     return null unless fs.existsSync(path)
-
-    try
-      # TODO: Drop the instance variable and only return the object?
-      @allOverrides = CSON.readFileSync(path)
-    catch
-      console.error "An error occured while parsing overrides.cson"
-    finally
-      return @allOverrides
+    CSON.readFileSync(path)
 
   watchOverridesFile: (path) ->
-    # TODO: Handle file not existing by watching config dir?
-    return false unless fs.existsSync(path)
-
-    fs.watch path, (event) =>
-      return unless event == "change"
-      @loadOverrides(path)
-      for editor in atom.workspace.getEditors()
-        @applyOverrides(editor)
-
-    return true
+    if fs.existsSync(path)
+      fs.watch path, (event) =>
+        return unless event is "change"
+        @applyOverrides(editor) for editor in atom.workspace.getEditors()
 
   getOverridesFilePath: ->
-    # TODO: Make this configurable?
     path.join(atom.getConfigDirPath(), "overrides.cson")
 
   deactivate: ->

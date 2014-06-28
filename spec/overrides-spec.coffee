@@ -68,10 +68,6 @@ describe "Overrides", ->
       expect(buffer.lineForRow(1)).toBe '    5'
 
   describe "getScopeOverrides", ->
-    beforeEach ->
-      filePath = getConfigFilePath("overrides.cson")
-      Overrides.loadOverrides(filePath)
-
     it "returns nothing when given a scope with no overrides", ->
       overrides = Overrides.getScopeOverrides("foo")
       expect(overrides).toEqual {}
@@ -110,18 +106,19 @@ describe "Overrides", ->
     it "loads and returns the expected overrides", ->
       filePath = getConfigFilePath("overrides.cson")
       overrides = Overrides.loadOverrides(filePath)
-      expect(overrides.source.python).toBeDefined()
+      expect(overrides.source.python.tabLength).toBe(4)
+      expect(overrides.source.python.softTabs).toBe(true)
 
   describe "watchOverridesFile", ->
     it "does nothing when the file does not exist", ->
       badFilePath = "bad/path/redux.cson"
       result = Overrides.watchOverridesFile(badFilePath)
-      expect(result).toEqual(false)
+      expect(result).toBeFalsy()
 
     it "watches the file for changes", ->
       filePath = Overrides.getOverridesFilePath()
       result = Overrides.watchOverridesFile(filePath)
-      expect(result).toEqual(true)
+      expect(result).toBeTruthy()
 
   describe "getOverridesFilePath", ->
     it "returns the expected file path", ->
