@@ -1,8 +1,8 @@
-fs = require "fs-plus"
-path = require "path"
-temp = require "temp"
+fs              = require "fs-plus"
+path            = require "path"
+temp            = require "temp"
 {WorkspaceView} = require 'atom'
-wrench = require "wrench"
+wrench          = require "wrench"
 
 Overrides = require "../lib/overrides"
 
@@ -25,8 +25,10 @@ describe "Overrides", ->
 
     filePath = path.join(tempPath, 'atom-overrides.rb')
     fs.writeFileSync(filePath, '')
-    editor = atom.workspace.openSync(filePath)
-    buffer = editor.getBuffer()
+    waitsForPromise ->
+      atom.workspaceView.open(filePath).then (e) ->
+        editor = e
+        buffer = editor.getBuffer()
 
     waitsForPromise ->
       atom.packages.activatePackage('overrides')
@@ -48,11 +50,16 @@ describe "Overrides", ->
     it 'can override the defaults', ->
       filePath = path.join(tempPath, 'atom-overrides.py')
       fs.writeFileSync(filePath, '')
-      editor = atom.workspace.openSync(filePath)
-      buffer = editor.getBuffer()
-      editor.insertText('if foo:\n5\n')
-      editor.autoIndentBufferRow(1)
-      expect(buffer.lineForRow(1)).toBe '    5'
+
+      waitsForPromise ->
+        atom.workspaceView.open(filePath).then (e) ->
+          editor = e
+          buffer = editor.getBuffer()
+
+      runs ->
+        editor.insertText('if foo:\n5\n')
+        editor.autoIndentBufferRow(1)
+        expect(buffer.lineForRow(1)).toBe '    5'
 
     it 'updates settings when the grammar is changed after the file is opened', ->
       editor.setGrammar(atom.syntax.grammarForScopeName('source.python'))
