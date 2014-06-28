@@ -17,6 +17,8 @@ class Overrides
       tabLength: (editor, value) ->
         editor.setTabLength(value)
 
+    @whitelist = Object.keys(@map)
+
   activate: ->
     overridesFilePath = @getOverridesFilePath()
     @watchOverridesFile(overridesFilePath)
@@ -44,14 +46,12 @@ class Overrides
       @map[func](editor, value)
 
   getScopeOverrides: (scopeName) ->
-    whitelist = ['softTabs', 'softWrap', 'tabLength']
-
     overrides = {}
     temp = @loadOverrides(@getOverridesFilePath())
-    _.each scopeName?.split("."), (name) ->
+    _.each scopeName?.split("."), (name) =>
       if temp?[name]?
         overrides = _.defaults(temp[name], overrides)
-        overrides = _.pick(overrides, whitelist)
+        overrides = _.pick(overrides, @whitelist)
         temp = temp[name]
 
     overrides
