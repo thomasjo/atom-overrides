@@ -5,85 +5,71 @@ CSON = require "season"
 
 {Subscriber} = require "emissary"
 
-module.exports =
-  activate: ->
-    @subscriber = new Subscriber()
+class Overrides
+  Subscriber.includeInto(this)
 
+  constructor: ->
+    @map =
+      softTabs: (editor, value) ->
+        editor.setSoftTabs(value)
+      softWrap: (editor, value) ->
+        editor.setSoftWrap(value)
+      tabLength: (editor, value) ->
+        editor.setTabLength(value)
+
+    @whitelist = Object.keys(@map)
+
+  activate: ->
     overridesFilePath = @getOverridesFilePath()
-    @loadOverrides(overridesFilePath)
     @watchOverridesFile(overridesFilePath)
 
-    @subscriber.subscribe atom.workspace.eachEditor (editor) =>
+    atom.workspace.eachEditor (editor) =>
       @applyOverrides(editor)
       @handleEvents(editor)
 
-    atom.workspaceView.command "editor-redux:open-user-overrides", =>
-      @openOverridesFile(overridesFilePath)
+    atom.workspaceView.command "overrides:open-user-overrides", ->
+      atom.workspace.open(overridesFilePath)
 
   handleEvents: (editor) ->
-    @subscriber.subscribe editor, "grammar-changed", =>
+    @subscribe editor, "grammar-changed", =>
       @applyOverrides(editor)
 
-    @subscriber.subscribe editor, "destroyed", =>
-      @subscriber.unsubscribe(editor)
+    @subscribe editor, "destroyed", =>
+      @unsubscribe editor
 
   applyOverrides: (editor) ->
     grammar = editor.getGrammar()
     scopeName = grammar.scopeName
     overrides = @getScopeOverrides(scopeName)
 
-    for key, value of overrides
-      switch key
-        when "tabLength"
-          editor.setTabLength(value)
-        when "softTabs"
-          editor.setSoftTabs(value)
-        when "softWrap"
-          editor.setSoftWrap(value)
+    for func, value of overrides
+      @map[func](editor, value)
 
   getScopeOverrides: (scopeName) ->
-    whitelist = ['softTabs', 'softWrap', 'tabLength']
-
     overrides = {}
-    temp = @allOverrides
-    _.each scopeName?.split("."), (name) ->
+    temp = @loadOverrides(@getOverridesFilePath())
+    _.each scopeName?.split("."), (name) =>
       if temp?[name]?
         overrides = _.defaults(temp[name], overrides)
-        overrides = _.pick(overrides, whitelist)
+        overrides = _.pick(overrides, @whitelist)
         temp = temp[name]
 
     overrides
 
   loadOverrides: (path) ->
     return null unless fs.existsSync(path)
-
-    try
-      # TODO: Drop the instance variable and only return the object?
-      @allOverrides = CSON.readFileSync(path)
-    catch
-      console.error "An error occured while parsing overrides.cson"
-    finally
-      return @allOverrides
+    CSON.readFileSync(path)
 
   watchOverridesFile: (path) ->
-    # TODO: Handle file not existing by watching config dir?
-    return false unless fs.existsSync(path)
-
-    fs.watch path, (event) =>
-      return unless event == "change"
-      @loadOverrides(path)
-      for editor in atom.workspace.getEditors()
-        @applyOverrides(editor)
-
-    return true
-
-  openOverridesFile: (path) ->
-    atom.workspace.open(path)
+    if fs.existsSync(path)
+      fs.watch path, (event) =>
+        return unless event is "change"
+        @applyOverrides(editor) for editor in atom.workspace.getEditors()
 
   getOverridesFilePath: ->
-    # TODO: Make this configurable?
     path.join(atom.getConfigDirPath(), "overrides.cson")
 
   deactivate: ->
-    @subscriber?.unsubscribe()
-    @subscriber = null
+    @unsubscribe()
+
+module.exports = new Overrides()
