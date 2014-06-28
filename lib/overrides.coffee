@@ -5,27 +5,27 @@ CSON = require "season"
 
 {Subscriber} = require "emissary"
 
-module.exports =
-  activate: ->
-    @subscriber = new Subscriber()
+class Overrides
+  Subscriber.includeInto(this)
 
+  activate: ->
     overridesFilePath = @getOverridesFilePath()
     @loadOverrides(overridesFilePath)
     @watchOverridesFile(overridesFilePath)
 
-    @subscriber.subscribe atom.workspace.eachEditor (editor) =>
+    atom.workspace.eachEditor (editor) =>
       @applyOverrides(editor)
       @handleEvents(editor)
 
-    atom.workspaceView.command "editor-redux:open-user-overrides", =>
-      @openOverridesFile(overridesFilePath)
+    atom.workspaceView.command "overrides:open-user-overrides", ->
+      atom.workspace.open(overridesFilePath)
 
   handleEvents: (editor) ->
-    @subscriber.subscribe editor, "grammar-changed", =>
+    @subscribe editor, 'grammar-changed', =>
       @applyOverrides(editor)
 
-    @subscriber.subscribe editor, "destroyed", =>
-      @subscriber.unsubscribe(editor)
+    @subscribe editor, 'destroyed', =>
+      @unsubscribe editor
 
   applyOverrides: (editor) ->
     grammar = editor.getGrammar()
@@ -77,13 +77,11 @@ module.exports =
 
     return true
 
-  openOverridesFile: (path) ->
-    atom.workspace.open(path)
-
   getOverridesFilePath: ->
     # TODO: Make this configurable?
     path.join(atom.getConfigDirPath(), "overrides.cson")
 
   deactivate: ->
-    @subscriber?.unsubscribe()
-    @subscriber = null
+    @unsubscribe()
+
+module.exports = new Overrides()
