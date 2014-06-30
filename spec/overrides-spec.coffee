@@ -6,11 +6,32 @@ wrench = require "wrench"
 {WorkspaceView} = require "atom"
 Overrides = require "../lib/overrides"
 
+allOverrides = {
+  'source':
+    'foo':
+      'softTabs': true
+
+    'bar':
+      'tabLength': 4
+
+    'python':
+      'tabLength': 4
+      'softTabs': true
+
+  'text':
+    'tabLength': 2
+    'softTabs': true
+
+    'foo':
+      'softTabs': false
+      'tabLength': 8
+
+      'bar':
+        'tabLength': 16
+}
+
 describe "Overrides", ->
   [buffer, editor, tempPath] = []
-
-  getConfigFilePath = (fileName) ->
-    path.join(atom.getConfigDirPath(), fileName)
 
   beforeEach ->
     fixturesPath = atom.project.getPath()
@@ -20,8 +41,6 @@ describe "Overrides", ->
 
     atom.workspaceView = new WorkspaceView()
     atom.workspace = atom.workspaceView.model
-
-    atom.config.set("editor.tabLength", 2)
 
     filePath = path.join(tempPath, "atom-overrides.rb")
     fs.writeFileSync(filePath, "")
@@ -39,7 +58,8 @@ describe "Overrides", ->
     waitsForPromise ->
       atom.packages.activatePackage("language-python")
 
-    spyOn(atom, "getConfigDirPath").andReturn(path.join(tempPath, "config"))
+    atom.config.set("editor.tabLength", 2)
+    atom.config.set("overrides.scopes", allOverrides)
 
   describe "Overrides", ->
     it "respects the defaults", ->
@@ -96,32 +116,3 @@ describe "Overrides", ->
         softTabs: false
         tabLength: 8
       }
-
-  describe "loadOverrides", ->
-    it "returns nothing when given a path to a file that does not exist", ->
-      filePath = "bad/path/redux.cson"
-      overrides = Overrides.loadOverrides(filePath)
-      expect(overrides).toBeNull()
-
-    it "loads and returns the expected overrides", ->
-      filePath = getConfigFilePath("overrides.cson")
-      overrides = Overrides.loadOverrides(filePath)
-      expect(overrides.source.python.tabLength).toBe(4)
-      expect(overrides.source.python.softTabs).toBe(true)
-
-  describe "watchOverridesFile", ->
-    it "does nothing when the file does not exist", ->
-      badFilePath = "bad/path/redux.cson"
-      result = Overrides.watchOverridesFile(badFilePath)
-      expect(result).toBeFalsy()
-
-    it "watches the file for changes", ->
-      filePath = Overrides.getOverridesFilePath()
-      result = Overrides.watchOverridesFile(filePath)
-      expect(result).toBeTruthy()
-
-  describe "getOverridesFilePath", ->
-    it "returns the expected file path", ->
-      expectedFilePath = getConfigFilePath("overrides.cson")
-      filePath = Overrides.getOverridesFilePath()
-      expect(filePath).toEqual(expectedFilePath)

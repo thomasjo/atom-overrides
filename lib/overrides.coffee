@@ -9,6 +9,9 @@ CSON = require "season"
 class Overrides
   Subscriber.includeInto(this)
 
+  configDefaults:
+    scopes: null
+
   constructor: ->
     @map =
       softTabs: (editor, value) ->
@@ -21,8 +24,7 @@ class Overrides
     @whitelist = Object.keys(@map)
 
   activate: ->
-    overridesFilePath = @getOverridesFilePath()
-    @watchOverridesFile(overridesFilePath)
+    @watchConfig()
 
     atom.workspace.eachEditor (editor) =>
       @applyOverrides(editor)
@@ -48,7 +50,7 @@ class Overrides
 
   getOverridesForScope: (scopeName) ->
     overrides = {}
-    temp = @loadOverrides(@getOverridesFilePath())
+    temp = @getOverrides()
     _.each scopeName?.split("."), (name) =>
       if temp?[name]?
         overrides = _.defaults(temp[name], overrides)
@@ -57,18 +59,12 @@ class Overrides
 
     overrides
 
-  loadOverrides: (path) ->
-    return null unless fs.existsSync(path)
-    CSON.readFileSync(path)
+  getOverrides: ->
+    atom.config.get("overrides.scopes")
 
-  watchOverridesFile: (path) ->
-    if fs.existsSync(path)
-      fs.watch path, (event) =>
-        return unless event is "change"
-        @applyOverrides(editor) for editor in atom.workspace.getEditors()
-
-  getOverridesFilePath: ->
-    path.join(atom.getConfigDirPath(), "overrides.cson")
+  watchConfig: () ->
+    @subscribe atom.config.observe "overrides.scopes", =>
+      @applyOverrides(editor) for editor in atom.workspace.getEditors()
 
   copyCurrentGrammarScope: ->
     editor = atom.workspace.getActiveEditor()
