@@ -8,32 +8,48 @@ Use the Atom package manager and search for e.g. "overrides", or run
 
 ## Usage
 The quickest way to tweak your overrides is via the menu item _Open Your
-Overrides_, which opens the overrides file. For the time being, the path to the
-overrides file is hardcoded to `<atom-config-dir>/overrides.cson`.
+Config_. For the time being all configured overrides need to be declared under
+the `overrides.scopes` key.
+
+### Example configuration file
+```coffeescript
+'editor':
+  'tabLength': 4
+# [..]
+'overrides':
+  'scopes':  
+    'source':
+      'tabLength': 2
+
+      'python':
+        'tabLength': 4
+
+      'git-config':
+        'tabLength': 8
+        'softTabs': false
+
+    'text':
+      'softWrap': true
+# [..]
+```
+
+The configuration is monitored for changes, so there's no need to reload Atom.
+Simply edit and save, and your changes will applied immediately to all open
+editors, as well as any future ones.
+
+In order to help you out a little bit with adding overrides, there's a menu item
+listed under _Packages &rarr; Overrides_, called _Copy Grammar Scope of Active
+Editor_, that copies the scope name of the currently active editor to your
+clipboard.
 
 ### Cascading overrides
 Overrides are applied in a cascading manner, based on incremental scope matches.
-For instance, given the example file below, will override the tab length and
-soft tabs settings to `4` and `true`, respectively, for a Python editor. Whereas
-for e.g. a CoffeeScript editor (meaning a scope equal to `source.coffee`) only
-the tab length setting will be overridden, and it'll be set to `2`.
-In other words, if we were to remove the override for tab length listed under
-`source.python`, we would inherit that setting override from `source`.
-
-### Example overrides file
-```coffeescript
-'source':
-  'tabLength': 2
-  'python':
-    'tabLength': 4
-    'softTabs': true
-
-'text':
-  'softWrap': true
-```
-
-The configuration file is monitored for changes, so there's no need to reload
-Atom. Simply edit and save, and your changes will applied immediately.
+For instance, given the example file above, all _Python_ editors will have their
+tab length set to `4`. Whereas e.g. a _Git Config_ editor (meaning a scope equal
+to `source.git-config`) the tab length setting will be set to `8`, and the soft
+tabs setting will be set to `false`. If we were to remove the override for tab
+length listed under `source: python`, we would inherit that setting override
+from `source`.
 
 ## Status
 Right now, the only supported editor settings are `tabLength`, `softTabs` and
