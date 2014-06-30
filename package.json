@@ -1,7 +1,7 @@
 {
   "name": "overrides",
   "main": "./lib/overrides",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Override editor settings related to coding style, based on grammar scopes.",
   "repository": "https://github.com/thomasjo/atom-overrides",
   "license": "MIT",
