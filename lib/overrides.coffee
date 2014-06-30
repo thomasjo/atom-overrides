@@ -40,12 +40,12 @@ class Overrides
   applyOverrides: (editor) ->
     grammar = editor.getGrammar()
     scopeName = grammar.scopeName
-    overrides = @getScopeOverrides(scopeName)
+    overrides = @getOverridesForScope(scopeName)
 
     for func, value of overrides
       @map[func](editor, value)
 
-  getScopeOverrides: (scopeName) ->
+  getOverridesForScope: (scopeName) ->
     overrides = {}
     temp = @loadOverrides(@getOverridesFilePath())
     _.each scopeName?.split("."), (name) =>

@@ -67,31 +67,31 @@ describe "Overrides", ->
       editor.autoIndentBufferRow(1)
       expect(buffer.lineForRow(1)).toBe "    5"
 
-  describe "getScopeOverrides", ->
+  describe "getOverridesForScope", ->
     it "returns nothing when given a scope with no overrides", ->
-      overrides = Overrides.getScopeOverrides("foo")
+      overrides = Overrides.getOverridesForScope("foo")
       expect(overrides).toEqual {}
 
     it "returns nothing when given a nested scope with no overrides at any level", ->
-      overrides = Overrides.getScopeOverrides("foo.bar")
+      overrides = Overrides.getOverridesForScope("foo.bar")
       expect(overrides).toEqual {}
 
     it "returns the expected overrides for the given non-cascading scope", ->
-      overrides = Overrides.getScopeOverrides("source.python")
+      overrides = Overrides.getOverridesForScope("source.python")
       expect(overrides).toEqual {
         "tabLength": 4
         "softTabs": true
       }
 
     it "returns the cascaded overrides for the given scope", ->
-      overrides = Overrides.getScopeOverrides("text.foo.bar")
+      overrides = Overrides.getOverridesForScope("text.foo.bar")
       expect(overrides).toEqual {
         "tabLength": 16
         "softTabs": false
       }
 
     it "returns the overrides only to the depth that is requested", ->
-      overrides = Overrides.getScopeOverrides("text.foo")
+      overrides = Overrides.getOverridesForScope("text.foo")
       expect(overrides).toEqual {
         softTabs: false
         tabLength: 8
