@@ -44,18 +44,12 @@ describe "Overrides", ->
 
     filePath = path.join(tempPath, "atom-overrides.rb")
     fs.writeFileSync(filePath, "")
-    waitsForPromise ->
-      atom.workspaceView.open(filePath).then (e) ->
-        editor = e
-        buffer = editor.getBuffer()
+    editor = atom.workspaceView.openSync(filePath)
+    buffer = editor.getBuffer()
 
     waitsForPromise ->
       atom.packages.activatePackage("overrides")
-
-    waitsForPromise ->
       atom.packages.activatePackage("language-ruby")
-
-    waitsForPromise ->
       atom.packages.activatePackage("language-python")
 
     atom.config.set("editor.tabLength", 2)
@@ -70,16 +64,12 @@ describe "Overrides", ->
     it "can override the defaults", ->
       filePath = path.join(tempPath, "atom-overrides.py")
       fs.writeFileSync(filePath, "")
+      editor = atom.workspaceView.openSync(filePath)
+      buffer = editor.getBuffer()
 
-      waitsForPromise ->
-        atom.workspaceView.open(filePath).then (e) ->
-          editor = e
-          buffer = editor.getBuffer()
-
-      runs ->
-        editor.insertText("if foo:\n5\n")
-        editor.autoIndentBufferRow(1)
-        expect(buffer.lineForRow(1)).toBe "    5"
+      editor.insertText("if foo:\n5\n")
+      editor.autoIndentBufferRow(1)
+      expect(buffer.lineForRow(1)).toBe "    5"
 
     it "updates settings when the grammar is changed after the file is opened", ->
       editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
