@@ -1,4 +1,5 @@
 _ = require "underscore-plus"
+clipboard = require "clipboard"
 fs = require "fs-plus"
 path = require "path"
 CSON = require "season"
