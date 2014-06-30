@@ -1,4 +1,5 @@
 _ = require "underscore-plus"
+clipboard = require "clipboard"
 fs = require "fs-plus"
 path = require "path"
 CSON = require "season"
@@ -7,6 +8,9 @@ CSON = require "season"
 
 class Overrides
   Subscriber.includeInto(this)
+
+  configDefaults:
+    scopes: null
 
   constructor: ->
     @map =
@@ -20,15 +24,14 @@ class Overrides
     @whitelist = Object.keys(@map)
 
   activate: ->
-    overridesFilePath = @getOverridesFilePath()
-    @watchOverridesFile(overridesFilePath)
+    @watchConfig()
 
     atom.workspace.eachEditor (editor) =>
       @applyOverrides(editor)
       @handleEvents(editor)
 
-    atom.workspaceView.command "overrides:open-user-overrides", ->
-      atom.workspace.open(overridesFilePath)
+    atom.workspaceView.command "overrides:copy-grammar-scope", =>
+      @copyCurrentGrammarScope()
 
   handleEvents: (editor) ->
     @subscribe editor, "grammar-changed", =>
@@ -40,14 +43,14 @@ class Overrides
   applyOverrides: (editor) ->
     grammar = editor.getGrammar()
     scopeName = grammar.scopeName
-    overrides = @getScopeOverrides(scopeName)
+    overrides = @getOverridesForScope(scopeName)
 
     for func, value of overrides
       @map[func](editor, value)
 
-  getScopeOverrides: (scopeName) ->
+  getOverridesForScope: (scopeName) ->
     overrides = {}
-    temp = @loadOverrides(@getOverridesFilePath())
+    temp = @getOverrides()
     _.each scopeName?.split("."), (name) =>
       if temp?[name]?
         overrides = _.defaults(temp[name], overrides)
@@ -56,18 +59,18 @@ class Overrides
 
     overrides
 
-  loadOverrides: (path) ->
-    return null unless fs.existsSync(path)
-    CSON.readFileSync(path)
+  getOverrides: ->
+    atom.config.get("overrides.scopes")
 
-  watchOverridesFile: (path) ->
-    if fs.existsSync(path)
-      fs.watch path, (event) =>
-        return unless event is "change"
-        @applyOverrides(editor) for editor in atom.workspace.getEditors()
+  watchConfig: () ->
+    @subscribe atom.config.observe "overrides.scopes", =>
+      @applyOverrides(editor) for editor in atom.workspace.getEditors()
 
-  getOverridesFilePath: ->
-    path.join(atom.getConfigDirPath(), "overrides.cson")
+  copyCurrentGrammarScope: ->
+    editor = atom.workspace.getActiveEditor()
+    grammar = editor?.getGrammar()
+    scopeName = grammar?.scopeName
+    clipboard.writeText(scopeName)
 
   deactivate: ->
     @unsubscribe()

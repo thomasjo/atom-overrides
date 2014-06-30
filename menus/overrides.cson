@@ -5,8 +5,8 @@
       'label': 'Overrides'
       'submenu': [
         {
-          'label': 'Open Your Overrides'
-          'command': 'overrides:open-user-overrides'
+          'label': 'Copy Grammar Scope of Active Editor'
+          'command': 'overrides:copy-grammar-scope'
         }
       ]
     ]
