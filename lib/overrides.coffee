@@ -62,7 +62,10 @@ class Overrides
     atom.config.get("overrides.scopes")
 
   watchConfig: () ->
-    @subscribe atom.config.observe "overrides.scopes", =>
+    # Too greedy? We're surely handling too many updates, but the impact to
+    # performance does not be justify implementing more complex logic at this
+    # point in time...
+    @subscribe atom.config, "updated", =>
       @applyOverrides(editor) for editor in atom.workspace.getEditors()
 
   copyCurrentGrammarScope: ->
