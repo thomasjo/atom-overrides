@@ -27,8 +27,8 @@ class Overrides
       @applyOverrides(editor)
       @handleEvents(editor)
 
-    atom.workspaceView.command "overrides:open-user-overrides", ->
-      atom.workspace.open(overridesFilePath)
+    atom.workspaceView.command "overrides:copy-grammar-scope", =>
+      @copyCurrentGrammarScope()
 
   handleEvents: (editor) ->
     @subscribe editor, "grammar-changed", =>
@@ -68,6 +68,12 @@ class Overrides
 
   getOverridesFilePath: ->
     path.join(atom.getConfigDirPath(), "overrides.cson")
+
+  copyCurrentGrammarScope: ->
+    editor = atom.workspace.getActiveEditor()
+    grammar = editor?.getGrammar()
+    scopeName = grammar?.scopeName
+    clipboard.writeText(scopeName)
 
   deactivate: ->
     @unsubscribe()
