@@ -1,5 +1,12 @@
-## master
-* Change to use a nested configuration that makes the inheritance more obvious
+## 0.7.0
+* Monitor configuration for all changes, and apply overrides when an update has
+  been observed. Resolves problems outlined in issue
+  [#3](https://github.com/thomasjo/atom-overrides/issues/3).
+
+## 0.6.0
+* Change to use a nested configuration that makes the inheritance more obvious.
+* Migrate from `overrides.cson` file for configuration, to Atom's `config.cson`.
+* Code has been cleaned up, and overall quality has been improved.
 
 ## 0.5.0
 * Renamed the package from _Editor Redux_ to _Overrides_.
