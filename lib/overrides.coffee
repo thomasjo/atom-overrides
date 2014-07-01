@@ -1,7 +1,5 @@
 _ = require "underscore-plus"
 clipboard = require "clipboard"
-fs = require "fs-plus"
-path = require "path"
 
 {Subscriber} = require "emissary"
 
@@ -13,12 +11,9 @@ class Overrides
 
   constructor: ->
     @map =
-      softTabs: (editor, value) ->
-        editor.setSoftTabs(value)
-      softWrap: (editor, value) ->
-        editor.setSoftWrap(value)
-      tabLength: (editor, value) ->
-        editor.setTabLength(value)
+      softTabs: (editor, value) -> editor.setSoftTabs(value)
+      softWrap: (editor, value) -> editor.setSoftWrap(value)
+      tabLength: (editor, value) -> editor.setTabLength(value)
 
     @whitelist = Object.keys(@map)
 
@@ -33,11 +28,8 @@ class Overrides
       @copyCurrentGrammarScope()
 
   handleEvents: (editor) ->
-    @subscribe editor, "grammar-changed", =>
-      @applyOverrides(editor)
-
-    @subscribe editor, "destroyed", =>
-      @unsubscribe editor
+    @subscribe editor, "grammar-changed", => @applyOverrides(editor)
+    @subscribe editor, "destroyed", => @unsubscribe editor
 
   applyOverrides: (editor) ->
     grammar = editor.getGrammar()
