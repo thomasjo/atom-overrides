@@ -1,7 +1,7 @@
 {WorkspaceView} = require "atom"
 Overrides = require "../lib/overrides"
 
-allOverrides = {
+allOverrides =
   'source':
     'foo':
       'softTabs': true
@@ -23,7 +23,6 @@ allOverrides = {
 
       'bar':
         'tabLength': 16
-}
 
 describe "Overrides", ->
   [buffer, editor] = []
