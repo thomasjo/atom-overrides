@@ -56,6 +56,16 @@ describe "Overrides", ->
       editor.autoIndentBufferRow(1)
       expect(buffer.lineForRow(1)).toBe "    5"
 
+    it "maintains the correct settings even when the default configuration is changed", ->
+      editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
+      editor.insertText("if foo:\n5\n")
+      atom.config.set("editor.tabLength", 8)
+
+      expect(editor.getTabLength()).toBe 4
+
+      editor.autoIndentBufferRow(1)
+      expect(buffer.lineForRow(1)).toBe "    5"
+
   describe "getOverridesForScope", ->
     it "returns nothing when given a scope with no overrides", ->
       overrides = Overrides.getOverridesForScope("foo")
