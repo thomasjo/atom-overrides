@@ -2,27 +2,22 @@
 Overrides = require "../lib/overrides"
 
 allOverrides =
-  'source':
-    'foo':
-      'softTabs': true
-
-    'bar':
-      'tabLength': 4
-
-    'python':
-      'tabLength': 4
-      'softTabs': true
-
-  'text':
-    'tabLength': 2
-    'softTabs': true
-
-    'foo':
-      'softTabs': false
-      'tabLength': 8
-
-      'bar':
-        'tabLength': 16
+  "source":
+    "foo":
+      "softTabs": true
+    "bar":
+      "tabLength": 4
+    "python":
+      "tabLength": 4
+      "softTabs": true
+  "text":
+    "tabLength": 2
+    "softTabs": true
+    "foo":
+      "softTabs": false
+      "tabLength": 8
+      "bar":
+        "tabLength": 16
 
 describe "Overrides", ->
   [buffer, editor] = []
