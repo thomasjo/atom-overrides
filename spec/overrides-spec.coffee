@@ -41,7 +41,7 @@ describe "Overrides", ->
     editor = atom.workspace.openSync()
     buffer = editor.getBuffer()
 
-  describe "Overrides", ->
+  describe "Interoperability with language packages", ->
     it "respects the defaults", ->
       editor.setGrammar(atom.syntax.grammarForScopeName("source.ruby"))
       editor.insertText("if foo\n5\nend")
