@@ -38,7 +38,7 @@ describe "Overrides", ->
     atom.config.set("editor.tabLength", 2)
     atom.config.set("overrides.scopes", allOverrides)
 
-    editor = atom.workspaceView.openSync()
+    editor = atom.workspace.openSync()
     buffer = editor.getBuffer()
 
   describe "Overrides", ->
