@@ -69,4 +69,4 @@ class Overrides
   deactivate: ->
     @unsubscribe()
 
-module.exports = new Overrides()
+module.exports = new Overrides

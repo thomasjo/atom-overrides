@@ -23,7 +23,7 @@ describe "Overrides", ->
   [buffer, editor] = []
 
   beforeEach ->
-    atom.workspaceView = new WorkspaceView()
+    atom.workspaceView = new WorkspaceView
     atom.workspace = atom.workspaceView.model
 
     waitsForPromise -> atom.packages.activatePackage("overrides")
