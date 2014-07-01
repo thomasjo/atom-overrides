@@ -87,6 +87,6 @@ describe "Overrides", ->
     it "returns the overrides only to the depth that is requested", ->
       overrides = Overrides.getOverridesForScope("text.foo")
       expect(overrides).toEqual {
-        softTabs: false
-        tabLength: 8
+        "softTabs": false
+        "tabLength": 8
       }
