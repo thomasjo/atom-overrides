@@ -57,10 +57,7 @@ describe "Overrides", ->
       expect(buffer.lineForRow(1)).toBe "    5"
 
     it "maintains the correct settings even when the default configuration is changed", ->
-      filePath = path.join(tempPath, "atom-overrides.py")
-      fs.writeFileSync(filePath, "")
-      editor = atom.workspaceView.openSync(filePath)
-      buffer = editor.getBuffer()
+      editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
       editor.insertText("if foo:\n5\n")
       atom.config.set("editor.tabLength", 8)
 
