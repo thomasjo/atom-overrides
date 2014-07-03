@@ -11,6 +11,7 @@ class Overrides
 
   constructor: ->
     @map =
+      showInvisibles: ({editorView}, value) -> editorView.setShowInvisibles(value)
       softTabs: ({editor}, value) -> editor.setSoftTabs(value)
       softWrap: ({editor}, value) -> editor.setSoftWrap(value)
       tabLength: ({editor}, value) -> editor.setTabLength(value)
