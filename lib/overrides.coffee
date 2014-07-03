@@ -11,10 +11,10 @@ class Overrides
 
   constructor: ->
     @map =
-      showInvisibles: ({editorView}, value) -> editorView.setShowInvisibles(value)
-      softTabs: ({editor}, value) -> editor.setSoftTabs(value)
-      softWrap: ({editor}, value) -> editor.setSoftWrap(value)
-      tabLength: ({editor}, value) -> editor.setTabLength(value)
+      showInvisibles: (editorView, value) -> editorView.setShowInvisibles(value)
+      softTabs: (editorView, value) -> editorView.getEditor().setSoftTabs(value)
+      softWrap: (editorView, value) -> editorView.getEditor().setSoftWrap(value)
+      tabLength: (editorView, value) -> editorView.getEditor().setTabLength(value)
 
     @whitelist = Object.keys(@map)
 
@@ -40,7 +40,7 @@ class Overrides
     overrides = @getOverridesForScope(scopeName)
 
     for func, value of overrides
-      @map[func]({editor, editorView}, value)
+      @map[func](editorView, value)
 
   getOverridesForScope: (scopeName) ->
     overrides = {}
