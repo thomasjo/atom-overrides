@@ -11,33 +11,36 @@ class Overrides
 
   constructor: ->
     @map =
-      softTabs: (editor, value) -> editor.setSoftTabs(value)
-      softWrap: (editor, value) -> editor.setSoftWrap(value)
-      tabLength: (editor, value) -> editor.setTabLength(value)
+      showInvisibles: (editorView, value) -> editorView.setShowInvisibles(value)
+      softTabs: (editorView, value) -> editorView.getEditor().setSoftTabs(value)
+      softWrap: (editorView, value) -> editorView.getEditor().setSoftWrap(value)
+      tabLength: (editorView, value) -> editorView.getEditor().setTabLength(value)
 
     @whitelist = Object.keys(@map)
 
   activate: ->
     @watchConfig()
 
-    atom.workspace.eachEditor (editor) =>
-      @applyOverrides(editor)
-      @handleEvents(editor)
+    atom.workspaceView.eachEditorView (editorView) =>
+      @applyOverrides(editorView)
+      @handleEvents(editorView)
 
     atom.workspaceView.command "overrides:copy-grammar-scope", =>
       @copyCurrentGrammarScope()
 
-  handleEvents: (editor) ->
-    @subscribe editor, "grammar-changed", => @applyOverrides(editor)
+  handleEvents: (editorView) ->
+    editor = editorView.getEditor()
+    @subscribe editor, "grammar-changed", => @applyOverrides(editorView)
     @subscribe editor, "destroyed", => @unsubscribe editor
 
-  applyOverrides: (editor) ->
+  applyOverrides: (editorView) ->
+    editor = editorView.getEditor()
     grammar = editor.getGrammar()
     scopeName = grammar.scopeName
     overrides = @getOverridesForScope(scopeName)
 
     for func, value of overrides
-      @map[func](editor, value)
+      @map[func](editorView, value)
 
   getOverridesForScope: (scopeName) ->
     overrides = {}
@@ -58,7 +61,7 @@ class Overrides
     # performance does not be justify implementing more complex logic at this
     # point in time...
     @subscribe atom.config, "updated", =>
-      @applyOverrides(editor) for editor in atom.workspace.getEditors()
+      @applyOverrides(view) for view in atom.workspaceView.getEditorViews()
 
   copyCurrentGrammarScope: ->
     editor = atom.workspace.getActiveEditor()
