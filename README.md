@@ -28,8 +28,12 @@ the `overrides.scopes` key.
         'tabLength': 8
         'softTabs': false
 
+      'gfm':
+        'showIndentGuide': false
+
     'text':
       'softWrap': true
+      'showInvisibles': false
 # [..]
 ```
 
@@ -45,15 +49,21 @@ clipboard.
 ### Cascading overrides
 Overrides are applied in a cascading manner, based on incremental scope matches.
 For instance, given the example file above, all _Python_ editors will have their
-tab length set to `4`. Whereas e.g. a _Git Config_ editor (meaning a scope equal
-to `source.git-config`) the tab length setting will be set to `8`, and the soft
+tab length set to `4`. Whereas e.g. a _Git Config_ editor, meaning a scope equal
+to `source.git-config`, the tab length setting will be set to `8`, and the soft
 tabs setting will be set to `false`. If we were to remove the override for tab
 length listed under `source: python`, we would inherit that setting override
 from `source`.
 
 ## Status
-Right now, the only supported editor settings are `tabLength`, `softTabs` and
-`softWrap`. Support for more overrides will be added as soon as possible.
+Right now, the supported overrides are
+* `showInvisibles`
+* `showIndentGuide`
+* `softTabs`
+* `softWrap`
+* `tabLength`
+
+Support for more overrides will be added as soon as possible.
 
 ## TODO
 Current wish list, in a semi-prioritized order;
