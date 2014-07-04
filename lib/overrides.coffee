@@ -3,6 +3,7 @@ clipboard = require "clipboard"
 
 {Subscriber} = require "emissary"
 
+# Public: Handles all overrides functionality.
 class Overrides
   Subscriber.includeInto(this)
 
@@ -19,6 +20,7 @@ class Overrides
 
     @whitelist = Object.keys(@map)
 
+  # Public: Activates the package.
   activate: ->
     @watchConfig()
 
@@ -29,11 +31,13 @@ class Overrides
     atom.workspaceView.command "overrides:copy-grammar-scope", =>
       @copyCurrentGrammarScope()
 
-  handleEvents: (editorView) ->
-    editor = editorView.getEditor()
-    @subscribe editor, "grammar-changed", => @applyOverrides(editorView)
-    @subscribe editor, "destroyed", => @unsubscribe editor
+  # Public: Deactivates the package.
+  deactivate: ->
+    @unsubscribe()
 
+  # Internal: Applies the appropriate overrides to the given view.
+  #
+  # editorView - {EditorView} to which to apply the overrides.
   applyOverrides: (editorView) ->
     editor = editorView.getEditor()
     grammar = editor.getGrammar()
@@ -43,6 +47,27 @@ class Overrides
     for func, value of overrides
       @map[func](editorView, value)
 
+  # Internal: Copies the current scope to the clipboard.
+  copyCurrentGrammarScope: ->
+    editor = atom.workspace.getActiveEditor()
+    grammar = editor?.getGrammar()
+    scopeName = grammar?.scopeName
+    clipboard.writeText(scopeName)
+
+  # Internal: Gets all overrides.
+  #
+  # Returns the overrides for all scopes.
+  getOverrides: ->
+    atom.config.get("overrides.scopes")
+
+  # Internal: Gets the overrides for the given scope name.
+  #
+  # This method calculates the cascading settings in order to deliver all of
+  # the settings for the given scope.
+  #
+  # scopeName - Scope name {String} to get the overrides for.
+  #
+  # Returns the overrides for only the given scope.
   getOverridesForScope: (scopeName) ->
     overrides = {}
     temp = @getOverrides()
@@ -54,23 +79,20 @@ class Overrides
 
     overrides
 
-  getOverrides: ->
-    atom.config.get("overrides.scopes")
+  # Internal: Sets up event handlers.
+  #
+  # editorView - {EditorView} upon which to place event handlers.
+  handleEvents: (editorView) ->
+    editor = editorView.getEditor()
+    @subscribe editor, "grammar-changed", => @applyOverrides(editorView)
+    @subscribe editor, "destroyed", => @unsubscribe editor
 
+  # Internal: Subscribes to updates for the Atom configuration.
   watchConfig: () ->
     # Too greedy? We're surely handling too many updates, but the impact to
     # performance does not be justify implementing more complex logic at this
     # point in time...
     @subscribe atom.config, "updated", =>
       @applyOverrides(view) for view in atom.workspaceView.getEditorViews()
-
-  copyCurrentGrammarScope: ->
-    editor = atom.workspace.getActiveEditor()
-    grammar = editor?.getGrammar()
-    scopeName = grammar?.scopeName
-    clipboard.writeText(scopeName)
-
-  deactivate: ->
-    @unsubscribe()
 
 module.exports = new Overrides
