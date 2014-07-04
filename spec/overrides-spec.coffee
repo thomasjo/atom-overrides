@@ -95,3 +95,95 @@ describe "Overrides", ->
         "softTabs": false
         "tabLength": 8
       }
+
+  describe "watchConfig", ->
+    beforeEach ->
+      spyOn(Overrides, "applyOverrides")
+
+    it "calls @applyOverrides when the config is updated", ->
+      atom.config.set("foo.test", 2)
+      expect(Overrides.applyOverrides).toHaveBeenCalled()
+
+    it "does not call @applyOverrides after the package is deactivated", ->
+      atom.packages.deactivatePackage("atom-overrides")
+      atom.config.set("foo.test", 2)
+      expect(Overrides.applyOverrides).not.toHaveBeenCalled()
+
+  describe "setting configuration", ->
+    describe "showIndentGuide", ->
+      it "sets the attribute", ->
+        atom.config.set("overrides.scopes.source.python.showIndentGuide", true)
+        spyOn(Overrides.map, "showIndentGuide")
+
+        editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
+        expect(Overrides.map.showIndentGuide.mostRecentCall.args[1]).toBe(true)
+
+      it "does not set the attribute when not configured", ->
+        atom.config.set("overrides.scopes.source.python", {})
+        spyOn(Overrides.map, "showIndentGuide")
+
+        editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
+        expect(Overrides.map.showIndentGuide).not.toHaveBeenCalled()
+
+    describe "showInvisibles", ->
+      it "sets the attribute", ->
+        atom.config.set("overrides.scopes.source.python.showInvisibles", true)
+        spyOn(Overrides.map, "showInvisibles")
+
+        editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
+        expect(Overrides.map.showInvisibles.mostRecentCall.args[1]).toBe(true)
+
+      it "does not set the attribute when not configured", ->
+        atom.config.set("overrides.scopes.source.python", {})
+        spyOn(Overrides.map, "showInvisibles")
+
+        editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
+        expect(Overrides.map.showInvisibles).not.toHaveBeenCalled()
+
+    describe "softTabs", ->
+      it "sets the attribute", ->
+        atom.config.set("overrides.scopes.source.python.softTabs", true)
+        spyOn(editor, "setSoftTabs").andCallThrough()
+
+        editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
+        expect(editor.setSoftTabs).toHaveBeenCalledWith(true)
+        expect(editor.getSoftTabs()).toBe(true)
+
+      it "does not set the attribute when not configured", ->
+        atom.config.set("overrides.scopes.source.python", {})
+        spyOn(editor, "setSoftTabs")
+
+        editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
+        expect(editor.setSoftTabs).not.toHaveBeenCalled()
+
+    describe "softWrap", ->
+      it "sets the attribute", ->
+        atom.config.set("overrides.scopes.source.python.softWrap", true)
+        spyOn(editor, "setSoftWrap").andCallThrough()
+
+        editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
+        expect(editor.setSoftWrap).toHaveBeenCalledWith(true)
+        expect(editor.getSoftWrap()).toBe(true)
+
+      it "does not set the attribute when not configured", ->
+        atom.config.set("overrides.scopes.source.python", {})
+        spyOn(editor, "setSoftWrap")
+
+        editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
+        expect(editor.setSoftWrap).not.toHaveBeenCalled()
+
+    describe "tabLength", ->
+      it "sets the attribute", ->
+        atom.config.set("overrides.scopes.source.python.tabLength", 16)
+        spyOn(editor, "setTabLength").andCallThrough()
+
+        editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
+        expect(editor.setTabLength).toHaveBeenCalledWith(16)
+        expect(editor.getTabLength()).toBe(16)
+
+      it "does not set the attribute when not configured", ->
+        atom.config.set("overrides.scopes.source.python", {})
+        spyOn(editor, "setTabLength")
+
+        editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
+        expect(editor.setTabLength).not.toHaveBeenCalled()
