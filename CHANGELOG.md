@@ -1,3 +1,6 @@
+## 0.8.0
+* Added support for overriding `showIndentGuide` and `showInvisibles`.
+
 ## 0.7.0
 * Monitor configuration for all changes, and apply overrides when an update has
   been observed. Resolves problems outlined in issue
