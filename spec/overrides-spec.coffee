@@ -95,3 +95,19 @@ describe "Overrides", ->
         "softTabs": false
         "tabLength": 8
       }
+
+  describe "watchConfig", ->
+    it "calls @applyOverrides when the config is updated", ->
+      spyOn(Overrides, 'applyOverrides')
+
+      atom.config.set('foo.test', 2)
+
+      expect(Overrides.applyOverrides).toHaveBeenCalled()
+
+    it "does not call @applyOverrides after the package is deactivated", ->
+      spyOn(Overrides, 'applyOverrides')
+      atom.packages.deactivatePackage('atom-overrides')
+
+      atom.config.set('foo.test', 2)
+
+      expect(Overrides.applyOverrides).not.toHaveBeenCalled()
