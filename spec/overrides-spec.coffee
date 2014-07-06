@@ -66,6 +66,17 @@ describe "Overrides", ->
       editor.autoIndentBufferRow(1)
       expect(buffer.lineForRow(1)).toBe "    5"
 
+    it "maintains the correct settings even when the grammar is set to a default language", ->
+      editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
+      editor.insertText("if foo\n5\n")
+      expect(editor.getTabLength()).toBe 4
+
+      editor.setGrammar(atom.syntax.grammarForScopeName("source.ruby"))
+      expect(editor.getTabLength()).toBe 2
+
+      editor.autoIndentBufferRow(1)
+      expect(buffer.lineForRow(1)).toBe "  5"
+
   describe "getOverridesForScope", ->
     it "returns nothing when given a scope with no overrides", ->
       overrides = Overrides.getOverridesForScope("foo")
