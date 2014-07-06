@@ -35,24 +35,45 @@ class Overrides
   deactivate: ->
     @unsubscribe()
 
+  # Internal: Applies the default settings to the given view.
+  #
+  # editorView - {EditorView} to which to apply the defaults.
+  applyDefaults: (editorView) ->
+    @applySettings(editorView, @getDefaults())
+
   # Internal: Applies the appropriate overrides to the given view.
   #
   # editorView - {EditorView} to which to apply the overrides.
   applyOverrides: (editorView) ->
-    editor = editorView.getEditor()
-    grammar = editor.getGrammar()
-    scopeName = grammar.scopeName
-    overrides = @getOverridesForScope(scopeName)
+    scopeName = @getGrammarScopeName(editorView)
+    @applySettings(editorView, @getOverridesForScope(scopeName))
 
-    for func, value of overrides
-      @map[func](editorView, value)
+  # Internal: Applies the settings to the view.
+  #
+  # editorView - {EditorView} to which to apply the settings.
+  # settings - Settings to apply.
+  applySettings: (editorView, settings) ->
+    for func, value of settings
+      @map[func]?(editorView, value)
 
   # Internal: Copies the current scope to the clipboard.
   copyCurrentGrammarScope: ->
-    editor = atom.workspace.getActiveEditor()
-    grammar = editor?.getGrammar()
-    scopeName = grammar?.scopeName
+    scopeName = @getGrammarScopeName(atom.workspace.getActiveEditor())
     clipboard.writeText(scopeName)
+
+  # Internal: Gets the user's default editor configuration settings.
+  #
+  # Returns the default settings.
+  getDefaults: ->
+    _.defaults(atom.config.get("editor"), atom.config.getDefault("editor"))
+
+  # Gets the grammar's scope name for the given `EditorView`.
+  #
+  # editorView - {EditorView} for which to retrieve the grammar's scope name.
+  #
+  # Returns the grammar's scope name {String}.
+  getGrammarScopeName: (editorView) ->
+    editorView.getEditor()?.getGrammar()?.scopeName
 
   # Internal: Gets all overrides.
   #
@@ -84,8 +105,10 @@ class Overrides
   # editorView - {EditorView} upon which to place event handlers.
   handleEvents: (editorView) ->
     editor = editorView.getEditor()
-    @subscribe editor, "grammar-changed", => @applyOverrides(editorView)
     @subscribe editor, "destroyed", => @unsubscribe editor
+    @subscribe editor, "grammar-changed", =>
+      @applyDefaults(editorView)
+      @applyOverrides(editorView)
 
   # Internal: Subscribes to updates for the Atom configuration.
   watchConfig: () ->
