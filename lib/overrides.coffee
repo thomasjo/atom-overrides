@@ -39,28 +39,41 @@ class Overrides
   #
   # editorView - {EditorView} to which to apply the defaults.
   applyDefaults: (editorView) ->
-    values = _.defaults(atom.config.getDefault("editor"), atom.config.get("editor"))
-    for func, value of values
-      @map[func]?(editorView, value)
+    @applySettings(editorView, @getDefaults())
 
   # Internal: Applies the appropriate overrides to the given view.
   #
   # editorView - {EditorView} to which to apply the overrides.
   applyOverrides: (editorView) ->
-    editor = editorView.getEditor()
-    grammar = editor.getGrammar()
-    scopeName = grammar.scopeName
-    overrides = @getOverridesForScope(scopeName)
+    scopeName = @getGrammarScopeName(editorView)
+    @applySettings(editorView, @getOverridesForScope(scopeName))
 
-    for func, value of overrides
+  # Internal: Applies the settings to the view.
+  #
+  # editorView - {EditorView} to which to apply the settings.
+  # settings - Settings to apply.
+  applySettings: (editorView, settings) ->
+    for func, value of settings
       @map[func]?(editorView, value)
 
   # Internal: Copies the current scope to the clipboard.
   copyCurrentGrammarScope: ->
-    editor = atom.workspace.getActiveEditor()
-    grammar = editor?.getGrammar()
-    scopeName = grammar?.scopeName
+    scopeName = @getGrammarScopeName(atom.workspace.getActiveEditor())
     clipboard.writeText(scopeName)
+
+  # Internal: Gets the user's default editor configuration settings.
+  #
+  # Returns the default settings.
+  getDefaults: ->
+    _.defaults(atom.config.getDefault("editor"), atom.config.get("editor"))
+
+  # Gets the grammar's scope name for the given `EditorView`.
+  #
+  # editorView - {EditorView} for which to retrieve the grammar's scope name.
+  #
+  # Returns the grammar's scope name {String}.
+  getGrammarScopeName: (editorView) ->
+    editorView.getEditor()?.getGrammar()?.scopeName
 
   # Internal: Gets all overrides.
   #
