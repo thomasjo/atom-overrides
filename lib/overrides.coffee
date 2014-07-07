@@ -35,6 +35,14 @@ class Overrides
   deactivate: ->
     @unsubscribe()
 
+  # Internal: Applies the default settings to the given view.
+  #
+  # editorView - {EditorView} to which to apply the defaults.
+  applyDefaults: (editorView) ->
+    values = _.defaults(atom.config.getDefault("editor"), atom.config.get("editor"))
+    for func, value of values
+      @map[func]?(editorView, value)
+
   # Internal: Applies the appropriate overrides to the given view.
   #
   # editorView - {EditorView} to which to apply the overrides.
@@ -45,7 +53,7 @@ class Overrides
     overrides = @getOverridesForScope(scopeName)
 
     for func, value of overrides
-      @map[func](editorView, value)
+      @map[func]?(editorView, value)
 
   # Internal: Copies the current scope to the clipboard.
   copyCurrentGrammarScope: ->
@@ -84,8 +92,10 @@ class Overrides
   # editorView - {EditorView} upon which to place event handlers.
   handleEvents: (editorView) ->
     editor = editorView.getEditor()
-    @subscribe editor, "grammar-changed", => @applyOverrides(editorView)
     @subscribe editor, "destroyed", => @unsubscribe editor
+    @subscribe editor, "grammar-changed", =>
+      @applyDefaults(editorView)
+      @applyOverrides(editorView)
 
   # Internal: Subscribes to updates for the Atom configuration.
   watchConfig: () ->
