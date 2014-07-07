@@ -65,7 +65,7 @@ class Overrides
   #
   # Returns the default settings.
   getDefaults: ->
-    _.defaults(atom.config.getDefault("editor"), atom.config.get("editor"))
+    _.defaults(atom.config.get("editor"), atom.config.getDefault("editor"))
 
   # Gets the grammar's scope name for the given `EditorView`.
   #

@@ -31,7 +31,7 @@ describe "Overrides", ->
       waitsForPromise -> atom.packages.activatePackage("language-ruby")
       waitsForPromise -> atom.packages.activatePackage("language-python")
 
-      atom.config.set("editor.tabLength", 2)
+      atom.config.set("editor.tabLength", 3)
       atom.config.set("overrides.scopes", allOverrides)
 
       editor = atom.workspace.openSync()
