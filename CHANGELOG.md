@@ -1,3 +1,8 @@
+## 0.9.0
+* Fixed bug detailed in [#8](https://github.com/thomasjo/atom-overrides/issues/8),
+  related to removing overrides from a grammar, and reverting to the default
+  setting.
+
 ## 0.8.0
 * Added support for overriding `showIndentGuide` and `showInvisibles`.
 
