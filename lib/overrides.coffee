@@ -13,7 +13,8 @@ class Overrides
   constructor: ->
     @map =
       showIndentGuide: (editorView, value) -> editorView.setShowIndentGuide(value)
-      showInvisibles: (editorView, value) -> editorView.setShowInvisibles(value)
+      showInvisibles: (editorView, value) ->
+        editorView.getEditor().displayBuffer.setInvisibles(value)
       softTabs: (editorView, value) -> editorView.getEditor().setSoftTabs(value)
       softWrap: (editorView, value) -> editorView.getEditor().setSoftWrap(value)
       tabLength: (editorView, value) -> editorView.getEditor().setTabLength(value)

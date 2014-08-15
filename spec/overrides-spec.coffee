@@ -172,6 +172,12 @@ describe "Overrides", ->
           editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
           expect(Overrides.map.showInvisibles.mostRecentCall.args[1]).toBe(false)
 
+        it 'does not override the default when setting for a single editor', ->
+          atom.config.set("overrides.scopes.source.python.showInvisibles", true)
+
+          editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
+          expect(atom.config.get("editor.showInvisibles")).toBe false
+
       describe "softTabs", ->
         it "sets the attribute", ->
           atom.config.set("overrides.scopes.source.python.softTabs", false)
