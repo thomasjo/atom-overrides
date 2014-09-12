@@ -16,7 +16,7 @@ class Overrides
       showInvisibles: (editorView, value) ->
         editorView.getEditor().displayBuffer.setInvisibles(value)
       softTabs: (editorView, value) -> editorView.getEditor().setSoftTabs(value)
-      softWrap: (editorView, value) -> editorView.getEditor().setSoftWrap(value)
+      softWrap: (editorView, value) -> editorView.getEditor().setSoftWrapped(value)
       tabLength: (editorView, value) -> editorView.getEditor().setTabLength(value)
 
     @whitelist = Object.keys(@map)
@@ -107,7 +107,7 @@ class Overrides
   handleEvents: (editorView) ->
     editor = editorView.getEditor()
     @subscribe editor, "destroyed", => @unsubscribe editor
-    @subscribe editor, "grammar-changed", =>
+    editor.onDidChangeGrammar =>
       @applyDefaults(editorView)
       @applyOverrides(editorView)
 

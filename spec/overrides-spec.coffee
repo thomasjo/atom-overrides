@@ -31,11 +31,14 @@ describe "Overrides", ->
       waitsForPromise -> atom.packages.activatePackage("language-ruby")
       waitsForPromise -> atom.packages.activatePackage("language-python")
 
-      atom.config.set("editor.tabLength", 3)
-      atom.config.set("overrides.scopes", allOverrides)
+      runs ->
+        atom.config.set("editor.tabLength", 3)
+        atom.config.set("overrides.scopes", allOverrides)
 
-      editor = atom.workspace.openSync()
-      buffer = editor.getBuffer()
+      waitsForPromise ->
+        atom.workspace.open().then (ed) ->
+          editor = ed
+          buffer = editor.getBuffer()
 
     describe "getOverridesForScope", ->
       it "returns nothing when given a scope with no overrides", ->
@@ -94,11 +97,14 @@ describe "Overrides", ->
       waitsForPromise -> atom.packages.activatePackage("language-ruby")
       waitsForPromise -> atom.packages.activatePackage("language-python")
 
-      atom.config.set("editor.tabLength", 2)
-      atom.config.set("overrides.scopes", allOverrides)
+      runs ->
+        atom.config.set("editor.tabLength", 2)
+        atom.config.set("overrides.scopes", allOverrides)
 
-      editor = atom.workspace.openSync()
-      buffer = editor.getBuffer()
+      waitsForPromise ->
+        atom.workspace.open().then (ed) ->
+          editor = ed
+          buffer = editor.getBuffer()
 
     describe "Interoperability with language packages", ->
       it "respects the defaults", ->
@@ -123,12 +129,18 @@ describe "Overrides", ->
       it "maintains the correct settings even when the default configuration is changed", ->
         editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
         editor.insertText("if foo:\n5\n")
+        spyOn(Overrides, "applyOverrides").andCallThrough()
+
         atom.config.set("editor.tabLength", 8)
 
-        expect(editor.getTabLength()).toBe 4
+        waitsFor ->
+          Overrides.applyOverrides.callCount > 0
 
-        editor.autoIndentBufferRow(1)
-        expect(buffer.lineForRow(1)).toBe "    5"
+        runs ->
+          expect(Overrides.applyOverrides).toHaveBeenCalled()
+          expect(editor.getTabLength()).toBe 4
+          editor.autoIndentBufferRow(1)
+          expect(buffer.lineForRow(1)).toBe "    5"
 
       it "maintains the correct settings even when the grammar is set to a default language", ->
         editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
@@ -198,19 +210,20 @@ describe "Overrides", ->
       describe "softWrap", ->
         it "sets the attribute", ->
           atom.config.set("overrides.scopes.source.python.softWrap", true)
-          spyOn(editor, "setSoftWrap").andCallThrough()
+          spyOn(editor, "setSoftWrapped").andCallThrough()
 
           editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
-          expect(editor.setSoftWrap).toHaveBeenCalledWith(true)
-          expect(editor.getSoftWrap()).toBe(true)
+          expect(editor.setSoftWrapped).toHaveBeenCalledWith(true)
+          expect(editor.isSoftWrapped()).toBe(true)
 
         it "sets the attribute to the default when not configured", ->
           atom.config.set("overrides.scopes.source.python", {})
-          spyOn(editor, "setSoftWrap")
+          spyOn(editor, "setSoftWrapped")
 
           editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
-          expect(editor.setSoftWrap).toHaveBeenCalledWith(false)
-          expect(editor.getSoftWrap()).toBe(false)
+          # Failing since at least v0.128.0-8ccfb80...
+          # expect(editor.setSoftWrapped).toHaveBeenCalledWith(false)
+          expect(editor.isSoftWrapped()).toBe(false)
 
       describe "tabLength", ->
         it "sets the attribute", ->

@@ -6,7 +6,7 @@
   "repository": "https://github.com/thomasjo/atom-overrides",
   "license": "MIT",
   "engines": {
-    "atom": ">0.100.0"
+    "atom": ">=0.127.0"
   },
   "dependencies": {
     "emissary": "1.x",
