@@ -212,19 +212,18 @@ describe "Overrides", ->
       describe "softWrap", ->
         it "sets the attribute", ->
           atom.config.set("overrides.scopes.source.python.softWrap", true)
-          spyOn(editor, "setSoftWrapped").andCallThrough()
+          spyOn(editor, "setSoftWrap").andCallThrough()
 
           editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
-          expect(editor.setSoftWrapped).toHaveBeenCalledWith(true)
+          expect(editor.setSoftWrap).toHaveBeenCalledWith(true)
           expect(editor.isSoftWrapped()).toBe(true)
 
         it "sets the attribute to the default when not configured", ->
           atom.config.set("overrides.scopes.source.python", {})
-          spyOn(editor, "setSoftWrapped")
+          spyOn(editor, "setSoftWrap")
 
           editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
-          # Failing since at least v0.128.0-8ccfb80...
-          # expect(editor.setSoftWrapped).toHaveBeenCalledWith(false)
+          expect(editor.setSoftWrap).toHaveBeenCalledWith(false)
           expect(editor.isSoftWrapped()).toBe(false)
 
       describe "tabLength", ->
