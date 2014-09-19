@@ -156,41 +156,18 @@ describe "Overrides", ->
         expect(buffer.lineForRow(1)).toBe "  5"
 
     describe "setting configuration", ->
-      describe "showIndentGuide", ->
-        it "sets the attribute", ->
-          atom.config.set("overrides.scopes.source.python.showIndentGuide", true)
-          spyOn(Overrides.map, "showIndentGuide")
-
-          editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
-          expect(Overrides.map.showIndentGuide.mostRecentCall.args[1]).toBe(true)
-
         it "sets the attribute to the default when not configured", ->
           atom.config.set("overrides.scopes.source.python", {})
-          spyOn(Overrides.map, "showIndentGuide")
+          spyOn(Overrides.map, "softWrap")
 
           editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
-          expect(Overrides.map.showIndentGuide.mostRecentCall.args[1]).toBe(false)
-
-      describe "showInvisibles", ->
-        it "sets the attribute", ->
-          atom.config.set("overrides.scopes.source.python.showInvisibles", true)
-          spyOn(Overrides.map, "showInvisibles")
-
-          editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
-          expect(Overrides.map.showInvisibles.mostRecentCall.args[1]).toBe(true)
-
-        it "sets the attribute to the default when not configured", ->
-          atom.config.set("overrides.scopes.source.python", {})
-          spyOn(Overrides.map, "showInvisibles")
-
-          editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
-          expect(Overrides.map.showInvisibles.mostRecentCall.args[1]).toBe(false)
+          expect(Overrides.map.softWrap.mostRecentCall.args[1]).toBe(false)
 
         it 'does not override the default when setting for a single editor', ->
-          atom.config.set("overrides.scopes.source.python.showInvisibles", true)
+          atom.config.set("overrides.scopes.source.python.setSoftWrap", true)
 
           editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
-          expect(atom.config.get("editor.showInvisibles")).toBe false
+          expect(atom.config.get("editor.setSoftWrap")).toBeFalsy()
 
       describe "softTabs", ->
         it "sets the attribute", ->
@@ -212,19 +189,18 @@ describe "Overrides", ->
       describe "softWrap", ->
         it "sets the attribute", ->
           atom.config.set("overrides.scopes.source.python.softWrap", true)
-          spyOn(editor, "setSoftWrap").andCallThrough()
+          spyOn(editor, "setSoftWrapped").andCallThrough()
 
           editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
-          expect(editor.setSoftWrap).toHaveBeenCalledWith(true)
+          expect(editor.setSoftWrapped).toHaveBeenCalledWith(true)
           expect(editor.isSoftWrapped()).toBe(true)
 
         it "sets the attribute to the default when not configured", ->
           atom.config.set("overrides.scopes.source.python", {})
-          spyOn(editor, "setSoftWrap")
+          spyOn(editor, "setSoftWrapped").andCallThrough()
 
           editor.setGrammar(atom.syntax.grammarForScopeName("source.python"))
-          # Failing since at least v0.128.0-8ccfb80...
-          # expect(editor.setSoftWrap).toHaveBeenCalledWith(false)
+          expect(editor.setSoftWrapped).toHaveBeenCalledWith(false)
           expect(editor.isSoftWrapped()).toBe(false)
 
       describe "tabLength", ->

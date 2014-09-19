@@ -12,12 +12,9 @@ class Overrides
 
   constructor: ->
     @map =
-      showIndentGuide: (editorView, value) -> editorView.setShowIndentGuide(value)
-      showInvisibles: (editorView, value) ->
-        editorView.getEditor().displayBuffer.setInvisibles(value)
-      softTabs: (editorView, value) -> editorView.getEditor().setSoftTabs(value)
-      softWrap: (editorView, value) -> editorView.getEditor().setSoftWrap(value)
-      tabLength: (editorView, value) -> editorView.getEditor().setTabLength(value)
+      softTabs: (editor, value) -> editor.setSoftTabs(value)
+      softWrap: (editor, value) -> editor.setSoftWrapped(value)
+      tabLength: (editor, value) -> editor.setTabLength(value)
 
     @whitelist = Object.keys(@map)
 
@@ -25,9 +22,10 @@ class Overrides
   activate: ->
     @watchConfig()
 
-    atom.workspaceView.eachEditorView (editorView) =>
-      @applyOverrides(editorView)
-      @handleEvents(editorView)
+    atom.workspace.onDidAddTextEditor (event) =>
+      editor = event.textEditor
+      @applyOverrides(editor)
+      @handleEvents(editor)
 
     atom.workspaceView.command "overrides:copy-grammar-scope", =>
       @copyCurrentGrammarScope()
@@ -36,26 +34,26 @@ class Overrides
   deactivate: ->
     @unsubscribe()
 
-  # Internal: Applies the default settings to the given view.
+  # Internal: Applies the default settings to the given editor.
   #
-  # editorView - {EditorView} to which to apply the defaults.
-  applyDefaults: (editorView) ->
-    @applySettings(editorView, @getDefaults())
+  # editor - {Editor} to which to apply the defaults.
+  applyDefaults: (editor) ->
+    @applySettings(editor, @getDefaults())
 
-  # Internal: Applies the appropriate overrides to the given view.
+  # Internal: Applies the appropriate overrides to the given editor.
   #
-  # editorView - {EditorView} to which to apply the overrides.
-  applyOverrides: (editorView) ->
-    scopeName = @getGrammarScopeName(editorView)
-    @applySettings(editorView, @getOverridesForScope(scopeName))
+  # editor - {Editor} to which to apply the overrides.
+  applyOverrides: (editor) ->
+    scopeName = @getGrammarScopeName(editor)
+    @applySettings(editor, @getOverridesForScope(scopeName))
 
-  # Internal: Applies the settings to the view.
+  # Internal: Applies the settings to the editor.
   #
-  # editorView - {EditorView} to which to apply the settings.
+  # editor - {Editor} to which to apply the settings.
   # settings - Settings to apply.
-  applySettings: (editorView, settings) ->
+  applySettings: (editor, settings) ->
     for func, value of settings
-      @map[func]?(editorView, value)
+      @map[func]?(editor, value)
 
   # Internal: Copies the current scope to the clipboard.
   copyCurrentGrammarScope: ->
@@ -68,13 +66,13 @@ class Overrides
   getDefaults: ->
     _.defaults(atom.config.get("editor"), atom.config.getDefault("editor"))
 
-  # Gets the grammar's scope name for the given `EditorView`.
+  # Gets the grammar's scope name for the given `Editor`.
   #
-  # editorView - {EditorView} for which to retrieve the grammar's scope name.
+  # editor - {Editor} for which to retrieve the grammar's scope name.
   #
   # Returns the grammar's scope name {String}.
-  getGrammarScopeName: (editorView) ->
-    editorView.getEditor()?.getGrammar()?.scopeName
+  getGrammarScopeName: (editor) ->
+    editor?.getGrammar()?.scopeName
 
   # Internal: Gets all overrides.
   #
@@ -103,13 +101,12 @@ class Overrides
 
   # Internal: Sets up event handlers.
   #
-  # editorView - {EditorView} upon which to place event handlers.
-  handleEvents: (editorView) ->
-    editor = editorView.getEditor()
+  # editor - {Editor} upon which to place event handlers.
+  handleEvents: (editor) ->
     @subscribe editor, "destroyed", => @unsubscribe editor
     editor.onDidChangeGrammar =>
-      @applyDefaults(editorView)
-      @applyOverrides(editorView)
+      @applyDefaults(editor)
+      @applyOverrides(editor)
 
   # Internal: Subscribes to updates for the Atom configuration.
   watchConfig: () ->
@@ -117,6 +114,6 @@ class Overrides
     # performance does not be justify implementing more complex logic at this
     # point in time...
     @subscribe atom.config, "updated", =>
-      @applyOverrides(view) for view in atom.workspaceView.getEditorViews()
+      @applyOverrides(editor) for editor in atom.workspace.getTextEditors()
 
 module.exports = new Overrides
