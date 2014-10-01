@@ -22,7 +22,7 @@ class Overrides
   activate: ->
     @watchConfig()
 
-    atom.workspace.onDidAddTextEditor (event) =>
+    @subscribe atom.workspace.onDidAddTextEditor (event) =>
       editor = event.textEditor
       @applyOverrides(editor)
       @handleEvents(editor)
@@ -104,7 +104,7 @@ class Overrides
   # editor - {Editor} upon which to place event handlers.
   handleEvents: (editor) ->
     @subscribe editor, "destroyed", => @unsubscribe editor
-    editor.onDidChangeGrammar =>
+    @subscribe editor.onDidChangeGrammar =>
       @applyDefaults(editor)
       @applyOverrides(editor)
 
@@ -113,7 +113,7 @@ class Overrides
     # Too greedy? We're surely handling too many updates, but the impact to
     # performance does not be justify implementing more complex logic at this
     # point in time...
-    @subscribe atom.config, "updated", =>
+    @subscribe atom.config.onDidChange =>
       @applyOverrides(editor) for editor in atom.workspace.getTextEditors()
 
 module.exports = new Overrides
