@@ -1,4 +1,8 @@
 # Overrides [![Build Status](https://travis-ci.org/thomasjo/atom-overrides.svg?branch=master)](https://travis-ci.org/thomasjo/atom-overrides)
+
+:rotating_light: **This package has been deprecated, and unpublished from [atom.io](https://atom.io).** :rotating_light:
+
+
 An Atom package that provides support for overriding editor settings based on
 grammar scopes.
 
